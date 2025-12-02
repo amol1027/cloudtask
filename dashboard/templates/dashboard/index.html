@@ -1,0 +1,168 @@
+{% extends "dashboard/base_dashboard.html" %}
+
+{% block title %}Overview - CloudTask{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Page Header -->
+    <div class="flex items-center justify-between">
+        <h1 class="text-2xl font-bold text-gray-900">Dashboard Overview</h1>
+        <div class="flex gap-3">
+            {% if user.profile.role == 'ENTERPRISE' %}
+            <a href="{% url 'accounts:add_manager' %}"
+                class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 shadow-sm flex items-center">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
+                </svg>
+                Add Manager
+            </a>
+            <a href="{% url 'accounts:add_employee' %}"
+                class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 shadow-sm flex items-center">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z">
+                    </path>
+                </svg>
+                Add Employee
+            </a>
+            {% endif %}
+
+            <button
+                class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 shadow-sm flex items-center">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                New Project
+            </button>
+        </div>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Card 1 -->
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-sm font-medium text-gray-500">Total Projects</h3>
+                <span class="p-2 bg-indigo-50 text-indigo-600 rounded-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
+                    </svg>
+                </span>
+            </div>
+            <div class="flex items-baseline">
+                <p class="text-2xl font-bold text-gray-900">12</p>
+                <span class="ml-2 text-sm font-medium text-green-600">+2 this week</span>
+            </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-sm font-medium text-gray-500">Active Tasks</h3>
+                <span class="p-2 bg-blue-50 text-blue-600 rounded-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01">
+                        </path>
+                    </svg>
+                </span>
+            </div>
+            <div class="flex items-baseline">
+                <p class="text-2xl font-bold text-gray-900">48</p>
+                <span class="ml-2 text-sm font-medium text-gray-500">In progress</span>
+            </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-sm font-medium text-gray-500">Team Members</h3>
+                <span class="p-2 bg-purple-50 text-purple-600 rounded-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z">
+                        </path>
+                    </svg>
+                </span>
+            </div>
+            <div class="flex items-baseline">
+                <p class="text-2xl font-bold text-gray-900">8</p>
+                <span class="ml-2 text-sm font-medium text-green-600">Online now</span>
+            </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-sm font-medium text-gray-500">Efficiency</h3>
+                <span class="p-2 bg-orange-50 text-orange-600 rounded-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    </svg>
+                </span>
+            </div>
+            <div class="flex items-baseline">
+                <p class="text-2xl font-bold text-gray-900">94%</p>
+                <span class="ml-2 text-sm font-medium text-green-600">+5% vs last week</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity Section -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+            <h2 class="text-lg font-semibold text-gray-900">Recent Activity</h2>
+            <a href="#" class="text-sm text-indigo-600 hover:text-indigo-700 font-medium">View all</a>
+        </div>
+        <div class="divide-y divide-gray-100">
+            <!-- Activity Item 1 -->
+            <div class="px-6 py-4 flex items-center hover:bg-gray-50 transition-colors">
+                <div
+                    class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-sm">
+                    JD
+                </div>
+                <div class="ml-4 flex-1">
+                    <p class="text-sm font-medium text-gray-900">John Doe <span
+                            class="text-gray-500 font-normal">completed task</span> Frontend Setup</p>
+                    <p class="text-xs text-gray-500 mt-0.5">2 hours ago</p>
+                </div>
+                <span class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                    Completed
+                </span>
+            </div>
+
+            <!-- Activity Item 2 -->
+            <div class="px-6 py-4 flex items-center hover:bg-gray-50 transition-colors">
+                <div
+                    class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 font-bold text-sm">
+                    AS
+                </div>
+                <div class="ml-4 flex-1">
+                    <p class="text-sm font-medium text-gray-900">Alice Smith <span
+                            class="text-gray-500 font-normal">commented on</span> API Integration</p>
+                    <p class="text-xs text-gray-500 mt-0.5">4 hours ago</p>
+                </div>
+            </div>
+
+            <!-- Activity Item 3 -->
+            <div class="px-6 py-4 flex items-center hover:bg-gray-50 transition-colors">
+                <div
+                    class="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center text-yellow-600 font-bold text-sm">
+                    MK
+                </div>
+                <div class="ml-4 flex-1">
+                    <p class="text-sm font-medium text-gray-900">Mike Johnson <span
+                            class="text-gray-500 font-normal">created project</span> Mobile App Redesign</p>
+                    <p class="text-xs text-gray-500 mt-0.5">Yesterday</p>
+                </div>
+                <span class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                    New Project
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

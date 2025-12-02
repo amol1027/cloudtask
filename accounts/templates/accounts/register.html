@@ -1,0 +1,116 @@
+{% extends "landing/base.html" %}
+
+{% block content %}
+<div
+    class="min-h-screen flex items-center justify-center bg-gradient-to-br from-secondary to-accent py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-2xl">
+        <!-- Header -->
+        <div>
+            <h2 class="text-center text-3xl font-extrabold text-gray-900">
+                Create your account
+            </h2>
+            <p class="mt-2 text-center text-sm text-gray-600">
+                Already have an account?
+                <a href="{% url 'accounts:login' %}" class="font-medium text-primary hover:text-secondary transition">
+                    Sign in here
+                </a>
+            </p>
+        </div>
+
+        <!-- Messages -->
+        {% include "includes/messages.html" %}
+
+        <!-- Register Form -->
+        <form class="mt-8 space-y-6" method="POST" action="{% url 'accounts:register' %}">
+            {% csrf_token %}
+
+            <!-- Form Errors -->
+            {% if form.non_field_errors %}
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+                {{ form.non_field_errors }}
+            </div>
+            {% endif %}
+
+            <div class="space-y-4">
+                <!-- Username Field -->
+                <div>
+                    <label for="id_username" class="block text-sm font-medium text-gray-700 mb-1">
+                        Username <span class="text-red-500">*</span>
+                    </label>
+                    <input id="id_username" name="username" type="text" required
+                        class="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary focus:z-10 sm:text-sm"
+                        placeholder="Choose a username" value="{{ form.username.value|default:'' }}">
+                    {% if form.username.errors %}
+                    <p class="mt-1 text-sm text-red-600">{{ form.username.errors.0 }}</p>
+                    {% else %}
+                    <p class="mt-1 text-xs text-gray-500">150 characters or fewer. Letters, digits and @/./+/-/_ only.
+                    </p>
+                    {% endif %}
+                </div>
+
+                <!-- Password1 Field -->
+                <div>
+                    <label for="id_password1" class="block text-sm font-medium text-gray-700 mb-1">
+                        Password <span class="text-red-500">*</span>
+                    </label>
+                    <input id="id_password1" name="password1" type="password" required
+                        class="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary focus:z-10 sm:text-sm"
+                        placeholder="Create a strong password">
+                    {% if form.password1.errors %}
+                    <p class="mt-1 text-sm text-red-600">{{ form.password1.errors.0 }}</p>
+                    {% else %}
+                    <p class="mt-1 text-xs text-gray-500">Your password must contain at least 8 characters.</p>
+                    {% endif %}
+                </div>
+
+                <!-- Password2 Field -->
+                <div>
+                    <label for="id_password2" class="block text-sm font-medium text-gray-700 mb-1">
+                        Confirm Password <span class="text-red-500">*</span>
+                    </label>
+                    <input id="id_password2" name="password2" type="password" required
+                        class="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary focus:z-10 sm:text-sm"
+                        placeholder="Re-enter your password">
+                    {% if form.password2.errors %}
+                    <p class="mt-1 text-sm text-red-600">{{ form.password2.errors.0 }}</p>
+                    {% else %}
+                    <p class="mt-1 text-xs text-gray-500">Enter the same password as before, for verification.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Password Requirements -->
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <h4 class="text-sm font-semibold text-blue-900 mb-2">Password Requirements:</h4>
+                <ul class="text-xs text-blue-800 space-y-1 list-disc list-inside">
+                    <li>At least 8 characters long</li>
+                    <li>Can't be too similar to your username</li>
+                    <li>Can't be a commonly used password</li>
+                    <li>Can't be entirely numeric</li>
+                </ul>
+            </div>
+
+            <!-- Submit Button -->
+            <div>
+                <button type="submit"
+                    class="group relative w-full flex justify-center py-2.5 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-secondary hover:bg-accent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary transition duration-150 ease-in-out">
+                    <span class="absolute left-0 inset-y-0 flex items-center pl-3">
+                        <svg class="h-5 w-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                                d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z" />
+                        </svg>
+                    </span>
+                    Create Account
+                </button>
+            </div>
+
+            <!-- Back to Home -->
+            <div class="text-center">
+                <a href="{% url 'landing:index' %}" class="text-sm text-gray-600 hover:text-primary transition">
+                    ← Back to home
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

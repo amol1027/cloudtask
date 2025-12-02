@@ -1,0 +1,33 @@
+# Cloud-Based Task Management System - Requirements
+# Generated for Django 5.x with Python 3.11+
+
+# Core Framework
+Django==5.0.1
+
+# Production Server
+gunicorn==21.2.0
+
+# Database
+psycopg2-binary==2.9.9
+
+# Static Files Management
+whitenoise==6.6.0
+
+# Optional: Database URL parsing for PostgreSQL
+# dj-database-url==2.1.0
+
+# Optional: Environment variables management
+# python-decouple==3.8
+
+# Development Tools (uncomment for development)
+# Django Debug Toolbar
+# django-debug-toolbar==4.2.0
+
+# Code Quality
+# flake8==7.0.0
+# black==23.12.1
+
+# Testing
+# pytest==7.4.3
+# pytest-django==4.7.0
+# coverage==7.3.4
