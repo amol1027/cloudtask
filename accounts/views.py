@@ -49,10 +49,6 @@ class LoginView(DjangoLoginView):
         messages.success(self.request, f'Welcome back, {form.get_user().username}!')
         return super().form_valid(form)
     
-    def form_invalid(self, form):
-        messages.error(self.request, 'Invalid credentials. Please check your username/ID and password.')
-        return super().form_invalid(form)
-    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Login'
