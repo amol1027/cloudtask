@@ -1,0 +1,184 @@
+{% extends "dashboard/base_dashboard.html" %}
+
+{% block title %}Tasks - CloudTask{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Page Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900">Tasks</h1>
+            <p class="mt-1 text-sm text-gray-500">
+                {% if is_manager %}Manage and track all tasks{% else %}View your assigned tasks{% endif %}
+            </p>
+        </div>
+        {% if is_manager %}
+        <a href="{% url 'tasks:create' %}"
+            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+            </svg>
+            New Task
+        </a>
+        {% endif %}
+    </div>
+
+    <!-- Task Stats -->
+    <div class="grid grid-cols-2 gap-4 sm:grid-cols-4">
+        <div class="bg-white overflow-hidden shadow rounded-lg p-4">
+            <div class="flex items-center">
+                <div class="p-2 bg-gray-100 rounded-lg mr-3">
+                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-xs text-gray-500">To Do</p>
+                    <p class="text-xl font-semibold text-gray-900">{{ todo_count }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white overflow-hidden shadow rounded-lg p-4">
+            <div class="flex items-center">
+                <div class="p-2 bg-blue-100 rounded-lg mr-3">
+                    <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-xs text-gray-500">In Progress</p>
+                    <p class="text-xl font-semibold text-gray-900">{{ in_progress_count }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white overflow-hidden shadow rounded-lg p-4">
+            <div class="flex items-center">
+                <div class="p-2 bg-yellow-100 rounded-lg mr-3">
+                    <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-xs text-gray-500">In Review</p>
+                    <p class="text-xl font-semibold text-gray-900">{{ in_review_count }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white overflow-hidden shadow rounded-lg p-4">
+            <div class="flex items-center">
+                <div class="p-2 bg-green-100 rounded-lg mr-3">
+                    <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-xs text-gray-500">Done</p>
+                    <p class="text-xl font-semibold text-gray-900">{{ done_count }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tasks List -->
+    {% if tasks %}
+    <div class="bg-white shadow rounded-lg overflow-hidden">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Task</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Project</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Priority</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Assignee</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Due Date</th>
+                    <th scope="col" class="relative px-6 py-3"><span class="sr-only">Actions</span></th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                {% for task in tasks %}
+                <tr class="hover:bg-gray-50 transition-colors">
+                    <td class="px-6 py-4">
+                        <a href="{% url 'tasks:detail' task.pk %}" class="text-sm font-medium text-gray-900 hover:text-indigo-600">
+                            {{ task.title }}
+                        </a>
+                    </td>
+                    <td class="px-6 py-4 text-sm text-gray-500">
+                        <a href="{% url 'projects:detail' task.project.pk %}" class="hover:text-indigo-600">
+                            {{ task.project.name }}
+                        </a>
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                            {% if task.status == 'TODO' %}bg-gray-100 text-gray-800
+                            {% elif task.status == 'IN_PROGRESS' %}bg-blue-100 text-blue-800
+                            {% elif task.status == 'IN_REVIEW' %}bg-yellow-100 text-yellow-800
+                            {% else %}bg-green-100 text-green-800{% endif %}">
+                            {{ task.get_status_display }}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                            {% if task.priority == 'LOW' %}bg-gray-100 text-gray-800
+                            {% elif task.priority == 'MEDIUM' %}bg-blue-100 text-blue-800
+                            {% elif task.priority == 'HIGH' %}bg-orange-100 text-orange-800
+                            {% else %}bg-red-100 text-red-800{% endif %}">
+                            {{ task.get_priority_display }}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 text-sm text-gray-500">
+                        {% if task.assigned_to %}
+                        <div class="flex items-center">
+                            <div class="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 text-xs font-medium mr-2">
+                                {{ task.assigned_to.first_name|make_list|first|upper|default:task.assigned_to.username|make_list|first|upper }}
+                            </div>
+                            {{ task.assigned_to.get_full_name|default:task.assigned_to.username }}
+                        </div>
+                        {% else %}
+                        <span class="text-gray-400">Unassigned</span>
+                        {% endif %}
+                    </td>
+                    <td class="px-6 py-4 text-sm text-gray-500">
+                        {% if task.due_date %}
+                        {{ task.due_date|date:"M d, Y" }}
+                        {% else %}
+                        <span class="text-gray-400">No due date</span>
+                        {% endif %}
+                    </td>
+                    <td class="px-6 py-4 text-right text-sm font-medium">
+                        <a href="{% url 'tasks:detail' task.pk %}" class="text-indigo-600 hover:text-indigo-900">View</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <!-- Empty State -->
+    <div class="text-center py-12 bg-white rounded-lg shadow">
+        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+        </svg>
+        <h3 class="mt-2 text-sm font-medium text-gray-900">No tasks</h3>
+        <p class="mt-1 text-sm text-gray-500">
+            {% if is_manager %}
+            Get started by creating a new task.
+            {% else %}
+            No tasks have been assigned to you yet.
+            {% endif %}
+        </p>
+        {% if is_manager %}
+        <div class="mt-6">
+            <a href="{% url 'tasks:create' %}"
+                class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                </svg>
+                New Task
+            </a>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

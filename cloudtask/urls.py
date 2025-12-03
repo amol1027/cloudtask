@@ -28,8 +28,14 @@ urlpatterns = [
     # Accounts app (authentication, registration, profile)
     path('accounts/', include('accounts.urls')),
     
+    # Projects app (project management)
+    path('projects/', include('projects.urls')),
+    
     # Tasks app (task management)
-    # path('tasks/', include('tasks.urls')),
+    path('tasks/', include('tasks.urls')),
+    
+    # Notifications app
+    path('notifications/', include('notifications.urls')),
     
     # Dashboard app
     path('dashboard/', include('dashboard.urls')),

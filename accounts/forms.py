@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from .models import UserProfile
 
+
 class StaffAuthenticationForm(AuthenticationForm):
     """Custom authentication form that allows login with staff_id or username and validates role"""
     login_type = forms.CharField(required=False, widget=forms.HiddenInput())
@@ -53,6 +54,56 @@ class StaffAuthenticationForm(AuthenticationForm):
         
         return cleaned_data
 
+
+class EnterpriseRegistrationForm(UserCreationForm):
+    """Form for Enterprise user registration with organization creation"""
+    first_name = forms.CharField(required=True, label="First Name")
+    last_name = forms.CharField(required=True, label="Last Name")
+    email = forms.EmailField(required=True, label="Email")
+    organization_name = forms.CharField(
+        required=True, 
+        max_length=200, 
+        label="Organization Name",
+        help_text="The name of your company or organization"
+    )
+    organization_description = forms.CharField(
+        required=False,
+        widget=forms.Textarea(attrs={'rows': 3}),
+        label="Organization Description",
+        help_text="Brief description of your organization (optional)"
+    )
+
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'first_name', 'last_name')
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.email = self.cleaned_data['email']
+        user.first_name = self.cleaned_data['first_name']
+        user.last_name = self.cleaned_data['last_name']
+        
+        if commit:
+            user.save()
+            
+            # Create Organization
+            from projects.models import Organization
+            organization = Organization.objects.create(
+                name=self.cleaned_data['organization_name'],
+                description=self.cleaned_data.get('organization_description', ''),
+                created_by=user
+            )
+            
+            # Create UserProfile with Enterprise role and link to organization
+            UserProfile.objects.create(
+                user=user,
+                role='ENTERPRISE',
+                organization=organization
+            )
+        
+        return user
+
+
 class BaseStaffCreationForm(UserCreationForm):
     """Base form for creating staff (Manager/Employee)"""
     first_name = forms.CharField(required=True)
@@ -65,6 +116,11 @@ class BaseStaffCreationForm(UserCreationForm):
         model = User
         fields = ('username', 'email', 'first_name', 'last_name')
 
+    def __init__(self, *args, **kwargs):
+        # Extract the organization from kwargs (passed from view)
+        self.organization = kwargs.pop('organization', None)
+        super().__init__(*args, **kwargs)
+
     def save(self, commit=True):
         user = super().save(commit=False)
         user.email = self.cleaned_data['email']
@@ -72,14 +128,16 @@ class BaseStaffCreationForm(UserCreationForm):
         user.last_name = self.cleaned_data['last_name']
         if commit:
             user.save()
-            # Create profile
+            # Create profile with organization
             UserProfile.objects.create(
                 user=user,
                 role=self.role,
                 department=self.cleaned_data['department'],
-                staff_id=self.cleaned_data['staff_id']
+                staff_id=self.cleaned_data['staff_id'],
+                organization=self.organization
             )
         return user
+
 
 class ManagerCreationForm(BaseStaffCreationForm):
     role = 'MANAGER'
@@ -87,6 +145,7 @@ class ManagerCreationForm(BaseStaffCreationForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['staff_id'].label = "Manager ID"
+
 
 class EmployeeCreationForm(BaseStaffCreationForm):
     role = 'EMPLOYEE'

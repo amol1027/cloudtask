@@ -1,0 +1,135 @@
+{% extends "dashboard/base_dashboard.html" %}
+
+{% block title %}{{ title }} - CloudTask{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <!-- Page Header -->
+    <div class="mb-6">
+        <a href="{% url 'projects:list' %}" class="inline-flex items-center text-sm text-gray-500 hover:text-gray-700 mb-2">
+            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+            Back to Projects
+        </a>
+        <h1 class="text-2xl font-bold text-gray-900">{{ title }}</h1>
+    </div>
+
+    <!-- Form Card -->
+    <div class="bg-white shadow rounded-lg">
+        <form method="POST" class="p-6 space-y-6">
+            {% csrf_token %}
+
+            <!-- Form Errors -->
+            {% if form.non_field_errors %}
+            <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+                {{ form.non_field_errors }}
+            </div>
+            {% endif %}
+
+            <!-- Project Name -->
+            <div>
+                <label for="id_name" class="block text-sm font-medium text-gray-700 mb-1">
+                    Project Name <span class="text-red-500">*</span>
+                </label>
+                <input type="text" name="name" id="id_name" required
+                    value="{{ form.name.value|default:'' }}"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    placeholder="Enter project name">
+                {% if form.name.errors %}
+                <p class="mt-1 text-sm text-red-600">{{ form.name.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Description -->
+            <div>
+                <label for="id_description" class="block text-sm font-medium text-gray-700 mb-1">
+                    Description
+                </label>
+                <textarea name="description" id="id_description" rows="4"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    placeholder="Describe the project">{{ form.description.value|default:'' }}</textarea>
+                {% if form.description.errors %}
+                <p class="mt-1 text-sm text-red-600">{{ form.description.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Manager -->
+            <div>
+                <label for="id_manager" class="block text-sm font-medium text-gray-700 mb-1">
+                    Project Manager
+                </label>
+                <select name="manager" id="id_manager"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                    <option value="">-- Select Manager (optional) --</option>
+                    {% for manager in form.manager.field.queryset %}
+                    <option value="{{ manager.pk }}" {% if form.manager.value|stringformat:"s" == manager.pk|stringformat:"s" %}selected{% endif %}>
+                        {{ manager.get_full_name|default:manager.username }}
+                    </option>
+                    {% endfor %}
+                </select>
+                {% if form.manager.errors %}
+                <p class="mt-1 text-sm text-red-600">{{ form.manager.errors.0 }}</p>
+                {% endif %}
+                <p class="mt-1 text-xs text-gray-500">Only managers from your organization are shown</p>
+            </div>
+
+            <!-- Status -->
+            <div>
+                <label for="id_status" class="block text-sm font-medium text-gray-700 mb-1">
+                    Status
+                </label>
+                <select name="status" id="id_status"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                    {% for value, label in form.status.field.choices %}
+                    <option value="{{ value }}" {% if form.status.value == value %}selected{% endif %}>
+                        {{ label }}
+                    </option>
+                    {% endfor %}
+                </select>
+                {% if form.status.errors %}
+                <p class="mt-1 text-sm text-red-600">{{ form.status.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Dates -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label for="id_start_date" class="block text-sm font-medium text-gray-700 mb-1">
+                        Start Date
+                    </label>
+                    <input type="date" name="start_date" id="id_start_date"
+                        value="{{ form.start_date.value|date:'Y-m-d'|default:'' }}"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                    {% if form.start_date.errors %}
+                    <p class="mt-1 text-sm text-red-600">{{ form.start_date.errors.0 }}</p>
+                    {% endif %}
+                </div>
+                <div>
+                    <label for="id_end_date" class="block text-sm font-medium text-gray-700 mb-1">
+                        End Date
+                    </label>
+                    <input type="date" name="end_date" id="id_end_date"
+                        value="{{ form.end_date.value|date:'Y-m-d'|default:'' }}"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                    {% if form.end_date.errors %}
+                    <p class="mt-1 text-sm text-red-600">{{ form.end_date.errors.0 }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Submit Buttons -->
+            <div class="flex items-center justify-end space-x-3 pt-4 border-t border-gray-200">
+                <a href="{% url 'projects:list' %}"
+                    class="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Cancel
+                </a>
+                <button type="submit"
+                    class="px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    {{ button_text }}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

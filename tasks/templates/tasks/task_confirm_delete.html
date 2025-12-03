@@ -1,0 +1,52 @@
+{% extends "dashboard/base_dashboard.html" %}
+
+{% block title %}Delete Task - CloudTask{% endblock %}
+
+{% block content %}
+<div class="max-w-md mx-auto">
+    <!-- Confirmation Card -->
+    <div class="bg-white shadow rounded-lg overflow-hidden">
+        <div class="p-6">
+            <div class="flex items-center justify-center w-12 h-12 mx-auto bg-red-100 rounded-full mb-4">
+                <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                </svg>
+            </div>
+            
+            <h2 class="text-xl font-semibold text-gray-900 text-center mb-2">Delete Task</h2>
+            <p class="text-gray-600 text-center mb-6">
+                Are you sure you want to delete <strong>{{ task.title }}</strong>? This action cannot be undone.
+            </p>
+
+            <div class="bg-gray-50 rounded-lg p-4 mb-6">
+                <dl class="space-y-2 text-sm">
+                    <div class="flex justify-between">
+                        <dt class="text-gray-500">Project</dt>
+                        <dd class="text-gray-900">{{ task.project.name }}</dd>
+                    </div>
+                    <div class="flex justify-between">
+                        <dt class="text-gray-500">Status</dt>
+                        <dd class="text-gray-900">{{ task.get_status_display }}</dd>
+                    </div>
+                    <div class="flex justify-between">
+                        <dt class="text-gray-500">Comments</dt>
+                        <dd class="text-gray-900">{{ task.comments.count }}</dd>
+                    </div>
+                </dl>
+            </div>
+
+            <form method="POST" class="flex space-x-3">
+                {% csrf_token %}
+                <a href="{% url 'tasks:detail' task.pk %}"
+                    class="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 text-center">
+                    Cancel
+                </a>
+                <button type="submit"
+                    class="flex-1 px-4 py-2 border border-transparent rounded-lg text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                    Delete Task
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,36 +1,88 @@
 # CloudTask - Cloud-Based Task Management System
 
-A modern, cloud-based task management system built with Django 5.x and styled with Tailwind CSS. Designed for teams and individuals to collaborate, organize, and boost productivity.
+A modern, full-featured cloud-based task management system built with Django 5.x and styled with Tailwind CSS. Designed for organizations, teams, and individuals to collaborate, organize tasks, and boost productivity.
 
-## Tech Stack
+## 🚀 Features
 
-- **Backend**: Django 5.0.1
-- **Database**: SQLite (development) / PostgreSQL (production)
-- **Frontend**: Tailwind CSS (via CDN)
-- **Server**: Gunicorn
-- **Static Files**: Whitenoise
-- **Python**: 3.11+
+### User Management
+- **Multi-role System**: Enterprise Admin, Manager, and Employee roles
+- **Organization Structure**: Organizations with departments and staff IDs
+- **User Profiles**: Extended profiles with role-based permissions
 
-## Project Structure
+### Project Management
+- **Project CRUD**: Create, edit, delete projects
+- **Team Assignment**: Add/remove team members to projects
+- **Project Comments**: Discussion threads on projects
+- **Status Tracking**: Active, On Hold, Completed, Archived
+
+### Task Management
+- **Task CRUD**: Full task lifecycle management
+- **Kanban Board**: Drag-and-drop visual task board
+- **Task Dependencies**: Link related tasks with blocking dependencies
+- **Priority Levels**: Low, Medium, High, Urgent
+- **Status Workflow**: To Do → In Progress → In Review → Done
+- **File Attachments**: Upload files to tasks (up to 10MB)
+- **Task Templates**: Reusable task configurations
+- **Time Tracking**: Start/stop timer and manual time entry
+
+### Notifications & Activity
+- **Real-time Notifications**: Alerts for task assignments, updates, comments
+- **Activity Log**: Track all changes across projects and tasks
+- **Notification Center**: View and manage all notifications
+
+### Dashboard
+- **Real-time Analytics**: Project counts, task statistics, team metrics
+- **Task Status Overview**: Visual progress bars
+- **Recent Activity Feed**: Latest actions across the organization
+- **Role-based Views**: Different dashboards for Enterprise, Manager, Employee
+
+## 🛠 Tech Stack
+
+| Category | Technology |
+|----------|------------|
+| **Backend** | Django 5.0.1 |
+| **Database** | SQLite (dev) / PostgreSQL (prod) |
+| **Frontend** | Tailwind CSS (CDN) |
+| **Server** | Gunicorn |
+| **Static Files** | Whitenoise |
+| **Python** | 3.11+ |
+
+## 📁 Project Structure
 
 ```
 cloudtask/
 ├── cloudtask/          # Main project configuration
 │   ├── settings.py     # Django settings
 │   ├── urls.py         # URL routing
-│   ├── wsgi.py         # WSGI configuration
-│   └── asgi.py         # ASGI configuration
+│   └── wsgi.py         # WSGI configuration
 ├── accounts/           # User authentication & profiles
+│   ├── models.py       # UserProfile, Organization
+│   ├── views.py        # Login, Register, Staff management
+│   └── templates/      # Auth templates
+├── projects/           # Project management
+│   ├── models.py       # Project, ProjectMember, ProjectComment
+│   ├── views.py        # Project CRUD, member management
+│   └── templates/      # Project templates
 ├── tasks/              # Task management
+│   ├── models.py       # Task, TaskComment, TaskAttachment, TimeEntry, TaskTemplate
+│   ├── views.py        # Task CRUD, Kanban, Time tracking
+│   └── templates/      # Task templates including Kanban board
+├── notifications/      # Notifications & activity
+│   ├── models.py       # Notification, ActivityLog
+│   ├── views.py        # Notification list, mark read
+│   ├── utils.py        # Helper functions for notifications
+│   └── templates/      # Notification templates
+├── dashboard/          # Dashboard views
+│   ├── views.py        # Role-based dashboards
+│   └── templates/      # Dashboard templates
 ├── landing/            # Landing pages
 ├── templates/          # Project-level templates
-├── static/             # Project-level static files
 ├── manage.py           # Django management script
 ├── requirements.txt    # Python dependencies
-└── .gitignore          # Git ignore rules
+└── db.sqlite3          # SQLite database
 ```
 
-## Getting Started
+## 🚦 Getting Started
 
 ### Prerequisites
 
@@ -40,9 +92,10 @@ cloudtask/
 
 ### Installation
 
-1. **Clone the repository** (or create a new one):
+1. **Clone the repository**:
    ```bash
-   git checkout -b chore/project-setup
+   git clone https://github.com/amol1027/cloudtask.git
+   cd cloudtask
    ```
 
 2. **Create a virtual environment**:
@@ -61,29 +114,17 @@ cloudtask/
    pip install -r requirements.txt
    ```
 
-4. **Set up environment variables**:
-   
-   Copy the example environment file and configure:
+4. **Set up environment variables** (optional):
    ```bash
-   # Windows
    copy dev.env.example .env
-
-   # macOS/Linux
-   cp dev.env.example .env
    ```
-
-   Edit `.env` and set your values:
-   - `SECRET_KEY`: Generate a new Django secret key
-   - `DEBUG`: Set to `True` for development, `False` for production
-   - `DATABASE_URL`: PostgreSQL connection string (optional for production)
 
 5. **Run database migrations**:
    ```bash
-   python manage.py makemigrations
    python manage.py migrate
    ```
 
-6. **Create a superuser** (for admin access):
+6. **Create a superuser**:
    ```bash
    python manage.py createsuperuser
    ```
@@ -95,123 +136,105 @@ cloudtask/
 
 8. **Access the application**:
    - Landing Page: http://127.0.0.1:8000/
+   - Dashboard: http://127.0.0.1:8000/dashboard/
    - Admin Panel: http://127.0.0.1:8000/admin/
 
-## Environment Variables
+## 📱 Application URLs
 
-Create a `.env` file in the project root with the following variables:
+| URL | Description |
+|-----|-------------|
+| `/` | Landing page |
+| `/accounts/login/` | User login |
+| `/accounts/register/` | User registration |
+| `/dashboard/` | Main dashboard |
+| `/projects/` | Project list |
+| `/projects/create/` | Create new project |
+| `/tasks/` | Task list |
+| `/tasks/kanban/` | Kanban board |
+| `/tasks/templates/` | Task templates |
+| `/notifications/` | Notification center |
+| `/notifications/activity/` | Activity log |
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `SECRET_KEY` | Django secret key (keep this secret!) | Auto-generated placeholder |
-| `DEBUG` | Debug mode (True/False) | `True` |
-| `DATABASE_URL` | PostgreSQL connection string | SQLite (dev) |
-| `ALLOWED_HOSTS` | Comma-separated list of allowed hosts | `localhost,127.0.0.1` |
+## 👥 User Roles
 
-## Development
+| Role | Permissions |
+|------|-------------|
+| **Enterprise** | Full access: manage organization, projects, users |
+| **Manager** | Manage assigned projects, create tasks, view team |
+| **Employee** | View assigned tasks, update status, add comments |
+
+## 🔧 Development
 
 ### Running Tests
-
 ```bash
 python manage.py test
 ```
 
-### Collecting Static Files
-
-```bash
-python manage.py collectstatic
-```
-
 ### Creating Migrations
-
 ```bash
 python manage.py makemigrations
 python manage.py migrate
 ```
 
-## Production Deployment
-
-### PostgreSQL Configuration
-
-Uncomment the PostgreSQL section in `settings.py` and set the `DATABASE_URL` environment variable:
-
+### Collecting Static Files
 ```bash
-DATABASE_URL=postgresql://user:password@localhost:5432/cloudtask
+python manage.py collectstatic
 ```
 
-### Running with Gunicorn
+## 🚀 Production Deployment
 
+### Environment Variables
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `SECRET_KEY` | Django secret key | Auto-generated |
+| `DEBUG` | Debug mode | `True` |
+| `DATABASE_URL` | PostgreSQL connection string | SQLite |
+| `ALLOWED_HOSTS` | Allowed hosts | `localhost,127.0.0.1` |
+
+### Running with Gunicorn
 ```bash
 gunicorn cloudtask.wsgi:application --bind 0.0.0.0:8000
 ```
 
-### Static Files
+## 📊 Features by Phase
 
-Static files are served using Whitenoise. Run `collectstatic` before deployment:
+### ✅ Phase 1: Foundation
+- Django project setup
+- User authentication system
+- Organization & UserProfile models
+- Landing page
 
-```bash
-python manage.py collectstatic --noinput
-```
-
-## Apps Overview
-
-### 1. Landing (`landing/`)
-- Marketing and informational pages
-- Homepage with Tailwind CSS styling
-- Features showcase
-
-### 2. Accounts (`accounts/`)
-- User authentication (login, register, logout)
-- User profiles
-- Password reset
-- **Note**: Phase 2 will implement CustomUser model
-
-### 3. Tasks (`tasks/`)
+### ✅ Phase 2: Core Features
+- Project CRUD operations
 - Task CRUD operations
-- Task assignment and collaboration
-- Status tracking and priorities
-- **Note**: Phase 2 will implement full task models
+- Team member management
+- Role-based dashboards
 
-## Initial Git Commit
+### ✅ Phase 3: Enhanced Features
+- Notification system
+- Activity logging
+- File attachments
+- Project comments
+- Task dependencies
 
-This project is set up on branch `chore/project-setup`. Use the following commit message:
+### ✅ Phase 4: Advanced Features
+- Kanban board with drag-and-drop
+- Time tracking
+- Task templates
 
-```
-chore: initial project scaffold with landing, accounts, tasks apps
+## 🤝 Contributing
 
-- Created Django 5.x project with cloudtask configuration
-- Added three apps: accounts, tasks, landing
-- Configured Tailwind CSS via CDN
-- Set up Whitenoise for static files
-- Added PostgreSQL support with SQLite default
-- Created landing page templates
-- Configured timezone to Asia/Kolkata
-- Added requirements.txt with pinned dependencies
-- Created comprehensive .gitignore
-```
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-## Next Steps (Phase 2)
-
-- [ ] Implement CustomUser model in accounts app
-- [ ] Create Task and Tag models in tasks app
-- [ ] Build authentication views (login, register, logout)
-- [ ] Develop task CRUD views and templates
-- [ ] Add user dashboard
-- [ ] Implement task filtering and search
-- [ ] Add real-time notifications
-- [ ] Create REST API endpoints
-
-## Contributing
-
-1. Create a feature branch (`git checkout -b feature/amazing-feature`)
-2. Commit your changes (`git commit -m 'Add amazing feature'`)
-3. Push to the branch (`git push origin feature/amazing-feature`)
-4. Open a Pull Request
-
-## License
+## 📄 License
 
 This project is for educational/portfolio purposes.
 
-## Support
+## 💬 Support
 
 For questions or issues, please open a GitHub issue.
